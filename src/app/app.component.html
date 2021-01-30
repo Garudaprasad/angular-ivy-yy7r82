@@ -1,0 +1,99 @@
+<div class="home-parent">
+  <h1>Application for finding the violation vehicles in signal</h1>
+  <div class="top-parent">
+    <div class="half-width">
+      <h2>Signal Control</h2>
+      <button
+        mat-raised-button
+        color="primary"
+        class="traffic-signal"
+        [ngClass]="{
+          'mat-green': signalButtonLabel === 'Go',
+          'mat-red': signalButtonLabel === 'Stop'
+        }"
+        (click)="signalChange($event)"
+      >
+        {{ signalButtonLabel }}
+        {{
+          signalButtonLabel === "Go" || signalButtonLabel === "Stop"
+            ? "(" + timer + ")"
+            : ""
+        }}
+      </button>
+      <div class="chips-div">
+        <h3>
+          Vehicle Monitor
+          {{
+            signalButtonLabel === "Go"
+              ? "(All Vehicles are moving)"
+              : signalButtonLabel === "Stop"
+              ? "(Vehicles stopped and below is the list of vehicles waiting in signal arena)"
+              : ""
+          }}
+        </h3>
+        <mat-chip-list aria-label="Cars Present">
+          <mat-chip *ngFor="let chip of vehiclesAtSignal">
+            {{ chip }}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+      <div class="progress-div">
+        <mat-spinner
+          *ngIf="serverMessage === 'Updating data to server'"
+          diameter="30"
+        ></mat-spinner>
+        <h1
+          [ngClass]="{
+            'font-green': serverMessage === 'Data sent...!!!'
+          }"
+        >
+          {{ serverMessage }}
+        </h1>
+      </div>
+    </div>
+    <mat-divider class="custom-divider" [vertical]="true"></mat-divider>
+    <div class="half-width">
+      <h2>Officer Application</h2>
+      <div class="chips-div-right">
+        <h3>
+          Vehicle Monitor
+          {{
+            signalButtonLabel === "Go"
+              ? "(All Vehicles are moving)"
+              : signalButtonLabel === "Stop"
+              ? "(List of Violated vehicles waiting in signal arena)"
+              : ""
+          }}
+        </h3>
+        <mat-chip-list aria-label="Violated vehicles Present" selectable="true">
+          <mat-chip
+            *ngFor="let chip of violatedVehicles"
+            selected
+            [color]="accent"
+            (click)="vehicleSelected(chip)"
+          >
+            {{ chip }}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+
+      <div
+        class="top-parent"
+        *ngIf="penaltyDetails != null && penaltyDetails.length > 0"
+      >
+        <div class="half-width">
+          <h3>Penalty Details</h3>
+          <p *ngFor="let temp of penaltyDetails">
+            {{ temp.description }} : $ {{ temp.amount }}
+          </p>
+          <h2>Total fine to be paid : $ {{ getSum(penaltyDetails) }}</h2>
+        </div>
+        <div class="half-width">
+          <h3>Vehicle Details</h3>
+          <h2>Vehicle ID : {{ selectedVehicle }}</h2>
+          <h2>Owned By : {{ ownerName }}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
